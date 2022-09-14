@@ -94,7 +94,7 @@ export class Client extends ClientEventEmitter {
     /**
      * Connect to a HVAC device and start polling status changes by default
      */
-    public connect() {
+    public connect(callback?: () => void): void {
         this._socket.on('message', message => this._handleResponse(message));
 
         this._socket.bind(() => {
@@ -106,7 +106,21 @@ export class Client extends ClientEventEmitter {
                 this.disconnect();
                 this.connect();
             }, this._options.connectTimeout);
+
+            if (callback) {
+                callback();
+            }
         });
+    }
+
+    public async connectAsync(): Promise<Client> {
+        return new Promise((res, rej) => {
+            try {
+                this.connect(() => { res(this) })
+            } catch (e) {
+                rej(e)
+            }
+        })
     }
 
     /**
