@@ -54,7 +54,8 @@ export declare class Client extends ClientEventEmitter {
     /**
      * Connect to a HVAC device and start polling status changes by default
      */
-    connect(): void;
+    connect(callback?: () => void): void;
+    connectAsync(): Promise<Client>;
     /**
      * Disconnect from a HVAC device and stop status polling
      */

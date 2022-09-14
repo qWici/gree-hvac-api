@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Client = void 0;
 const dgram = require("dgram");
@@ -69,7 +78,7 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
     /**
      * Connect to a HVAC device and start polling status changes by default
      */
-    connect() {
+    connect(callback) {
         this._socket.on('message', message => this._handleResponse(message));
         this._socket.bind(() => {
             this._socket.setBroadcast(true);
@@ -79,6 +88,21 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
                 this.disconnect();
                 this.connect();
             }, this._options.connectTimeout);
+            if (callback) {
+                callback();
+            }
+        });
+    }
+    connectAsync() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return new Promise((res, rej) => {
+                try {
+                    this.connect(() => { res(this); });
+                }
+                catch (e) {
+                    rej(e);
+                }
+            });
         });
     }
     /**
