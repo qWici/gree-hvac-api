@@ -5,6 +5,18 @@ slug: /
 
 # Getting Started
 
+## Installation
+```shell
+yarn add gree-ac-client
+```
+
+or
+
+```shell
+npm install --save gree-ac-client
+```
+
+## AC host
 First, you need to find out the IP address of your air conditioner in your network. One of the easiest ways is to
 view the list of devices connected to your router and find the air conditioner by excluding the devices you know.
 
