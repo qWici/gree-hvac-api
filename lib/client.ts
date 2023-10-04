@@ -142,7 +142,7 @@ export class Client extends ClientEventEmitter {
 
     public setProperties(state: Partial<Omit<State, 'currentTemperature'>>) {
         const vendorProperties = this._transformer.toVendor(state);
-        console.log({ vendorProperties })
+
         this._sendRequest({
             opt: Object.keys(vendorProperties),
             p: Object.values(vendorProperties),
