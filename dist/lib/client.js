@@ -16,6 +16,7 @@ const property_transformer_1 = require("./property-transformer");
 const stateDiff_1 = require("./utils/stateDiff");
 const validateOptions_1 = require("./utils/validateOptions");
 const client_event_emitter_1 = require("./client-event-emitter");
+const timers_1 = require("timers");
 class Client extends client_event_emitter_1.ClientEventEmitter {
     constructor(options) {
         super();
@@ -67,6 +68,12 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
          * @private
          */
         this._encryptionService = new encryption_1.EncryptionService();
+        /**
+         * Show is client connected
+         *
+         * @private
+         */
+        this._isConnected = false;
         (0, validateOptions_1.validateOptions)(options);
         this._options = Object.assign(defaultOptions, options);
         this._trace('OPTIONS', this._options);
@@ -97,7 +104,14 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
         return __awaiter(this, void 0, void 0, function* () {
             return new Promise((res, rej) => {
                 try {
-                    this.connect(() => { res(this); });
+                    this.connect(() => {
+                        const interval = setInterval(() => {
+                            if (this._isConnected) {
+                                (0, timers_1.clearInterval)(interval);
+                                res(this);
+                            }
+                        }, this._options.pollingInterval);
+                    });
                 }
                 catch (e) {
                     rej(e);
@@ -110,7 +124,7 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
      */
     disconnect() {
         if (this._statusIntervalRef) {
-            clearInterval(this._statusIntervalRef);
+            (0, timers_1.clearInterval)(this._statusIntervalRef);
         }
         if (this._socketTimeoutRef) {
             clearTimeout(this._socketTimeoutRef);
@@ -119,11 +133,11 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
             clearTimeout(this._statusTimeoutRef);
         }
         this._socket.close();
+        this._isConnected = false;
         this._emit('disconnect');
     }
     setProperties(state) {
         const vendorProperties = this._transformer.toVendor(state);
-        console.log({ vendorProperties });
         this._sendRequest({
             opt: Object.keys(vendorProperties),
             p: Object.values(vendorProperties),
@@ -131,10 +145,9 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
         });
     }
     setProperty(key, value) {
-        let properties = {
+        this.setProperties({
             [key]: value
-        };
-        this.setProperties(properties);
+        });
     }
     _sendBindRequest() {
         this._socketSend({
@@ -234,6 +247,7 @@ class Client extends client_event_emitter_1.ClientEventEmitter {
             this._statusIntervalRef = setInterval(() => this._requestStatus(), this._options.pollingInterval);
         }
         this._emit('connect');
+        this._isConnected = true;
     }
     _handleStatusResponse(pack) {
         clearTimeout(this._statusTimeoutRef);

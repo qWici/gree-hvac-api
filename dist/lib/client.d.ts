@@ -50,6 +50,12 @@ export declare class Client extends ClientEventEmitter {
      * @private
      */
     private readonly _encryptionService;
+    /**
+     * Show is client connected
+     *
+     * @private
+     */
+    private _isConnected;
     constructor(options: ClientOptions);
     /**
      * Connect to a HVAC device and start polling status changes by default

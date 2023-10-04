@@ -15,6 +15,7 @@ import {PropertyTransformer, VENDOR_PROPS} from "./property-transformer";
 import {stateDiff} from "./utils/stateDiff";
 import {validateOptions} from "./utils/validateOptions";
 import {ClientEventEmitter} from "./client-event-emitter";
+import {clearInterval} from "timers";
 
 export class Client extends ClientEventEmitter {
     private readonly _options: ClientOptions;
@@ -75,6 +76,13 @@ export class Client extends ClientEventEmitter {
      */
     private readonly _encryptionService = new EncryptionService();
 
+    /**
+     * Show is client connected
+     *
+     * @private
+     */
+    private _isConnected = false;
+
     constructor(options: ClientOptions) {
         super();
 
@@ -116,7 +124,14 @@ export class Client extends ClientEventEmitter {
     public async connectAsync(): Promise<Client> {
         return new Promise((res, rej) => {
             try {
-                this.connect(() => { res(this) })
+                this.connect(() => {
+                    const interval = setInterval(() => {
+                        if (this._isConnected) {
+                            clearInterval(interval);
+                            res(this)
+                        }
+                    }, this._options.pollingInterval);
+                })
             } catch (e) {
                 rej(e)
             }
@@ -137,6 +152,7 @@ export class Client extends ClientEventEmitter {
             clearTimeout(this._statusTimeoutRef);
         }
         this._socket.close();
+        this._isConnected = false;
         this._emit('disconnect');
     }
 
@@ -151,10 +167,9 @@ export class Client extends ClientEventEmitter {
     }
 
     public setProperty<O extends State, K extends keyof O>(key: K, value: O[K]) {
-        let properties = {
+        this.setProperties({
             [key]: value
-        };
-        this.setProperties(properties);
+        });
     }
 
 
@@ -272,6 +287,7 @@ export class Client extends ClientEventEmitter {
         }
 
         this._emit('connect');
+        this._isConnected = true;
     }
 
     private _handleStatusResponse(pack: StatusResponseDecryptionResult) {
