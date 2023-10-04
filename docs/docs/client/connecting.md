@@ -6,7 +6,7 @@ sidebar_position: 2
 
 ## Event based
 ```typescript
-import { Client } from "gree-hvac-api"
+import { Client } from "gree-ac-client"
 
 const client = new Client({ host: '192.168.7.60' });
 // autoConnect by default is true or use client.connect();
@@ -19,7 +19,7 @@ client.on('connect', () => {
 
 ## Async
 ```typescript
-import { Client } from "gree-hvac-api"
+import { Client } from "gree-ac-client"
 
 // turn off autoConnect and connect when you need it
 const client = new Client({ host: '192.168.7.60', autoConnect: false });
