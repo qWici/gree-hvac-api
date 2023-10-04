@@ -1,4 +1,4 @@
-import {ClientStateKeys, VendorStateProps} from "../defenitions";
+import {State, VendorStateProps} from "../defenitions";
 
 export abstract class PropertyAbstract {
     public readonly clientKey: StatePropertyOptions['clientKey'];
@@ -14,7 +14,7 @@ export abstract class PropertyAbstract {
 export type ClientValue = string | number;
 export type VendorValue = number;
 export interface StatePropertyOptions {
-    clientKey: ClientStateKeys;
+    clientKey: keyof State;
     vendorKey: VendorStateProps;
     valuesRelationship: Record<ClientValue, VendorValue>;
 }

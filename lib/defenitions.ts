@@ -46,27 +46,111 @@ export interface ClientEventCallbacks {
     no_response: ClientEmptyCallback;
 }
 
-export interface State {
-    power: "off" | "on";
-    mode: "auto" | "cool" | "dry" | "fan_only" | "heat";
-    temperatureUnit: "celsius" | "fahrenheit";
-    temperature: number;
-    currentTemperature: any; // TODO
-    fanSpeed: "auto" | "low" | "mediumLow" | "medium" | "mediumHigh" | "high";
-    air: "off" | "inside" | "outside" | "mode3";
-    blow: "off" | "on";
-    sleep: "off" | "on";
-    health: "off" | "on";
-    lights: "off" | "on";
-    swingHor: 'default' | 'full' | 'fixedLeft' | 'fixedMidLeft' | 'fixedMid' | 'fixedMidRight' | 'fixedRight' | 'fullAlt';
-    swingVert: 'default' | 'full' | 'fixedTop' | 'fixedMidTop' | 'fixedMid' | 'fixedMidBottom' | 'fixedBottom' | 'swingBottom' | 'swingMidBottom' | 'swingMid' | 'swingMidTop' | 'swingTop';
-    quiet: "off" | "mode1" | "mode2" | "mode3";
-    turbo: "off" | "on";
-    powerSave: "off" | "on";
+export enum Power {
+    "off" = "off",
+    "on" = "on"
 }
 
-export type ClientStateKeys = "power" | "mode" | "temperatureUnit" | "temperature" | "currentTemperature" | "fanSpeed"
-    | "air" | "blow" | "sleep" | "health" | "lights" | "swingHor" | "swingVert" | "quiet" | "turbo" | "powerSave";
+export enum Mode {
+    "auto" = "auto",
+    "cool" = "cool",
+    "dry" = "dry",
+    "fan_only" = "fan_only",
+    "heat" = "heat",
+}
+
+export enum TemperatureUnit {
+    "celsius" = "celsius",
+    "fahrenheit" = "fahrenheit"
+}
+
+export enum FanSpeed {
+    "auto" = "auto",
+    "low" = "low",
+    "mediumLow" = "mediumLow",
+    "medium" = "medium",
+    "mediumHigh" = "mediumHigh",
+    "high" = "high"
+}
+export enum Air {
+    "off" = "off",
+    "inside" = "inside",
+    "outside" = "outside",
+    "mode3" = "mode3"
+}
+export enum Blow {
+    "off" = "off",
+    "on" = "on"
+}
+export enum Sleep {
+    "off" = "off",
+    "on" = "on"
+}
+export enum Health {
+    "off" = "off",
+    "on" = "on"
+}
+export enum Lights {
+    "off" = "off",
+    "on" = "on"
+}
+export enum SwingHor {
+    'default' = 'default',
+    'full' = 'full',
+    'fixedLeft' = 'fixedLeft',
+    'fixedMidLeft' = 'fixedMidLeft',
+    'fixedMid' = 'fixedMid',
+    'fixedMidRight' = 'fixedMidRight',
+    'fixedRight' = 'fixedRight',
+    'fullAlt' = 'fullAlt'
+}
+export enum SwingVert {
+    'default' = 'default',
+    'full' = 'full',
+    'fixedTop' = 'fixedTop',
+    'fixedMidTop' = 'fixedMidTop',
+    'fixedMid' = 'fixedMid',
+    'fixedMidBottom' = 'fixedMidBottom',
+    'fixedBottom' = 'fixedBottom',
+    'swingBottom' = 'swingBottom',
+    'swingMidBottom' = 'swingMidBottom',
+    'swingMid' = 'swingMid',
+    'swingMidTop' = 'swingMidTop',
+    'swingTop' = 'swingTop'
+}
+export enum Quiet {
+    "off" = "off",
+    "mode1" = "mode1",
+    "mode2" = "mode2",
+    "mode3" = "mode3"
+}
+export enum Turbo {
+    "off" = "off",
+    "on" = "on"
+}
+export enum PowerSave {
+    "off" = "off",
+    "on" = "on"
+}
+
+export interface State {
+    power: Power;
+    mode: Mode;
+    temperatureUnit: TemperatureUnit;
+    temperature: number;
+    currentTemperature: any;
+    fanSpeed: FanSpeed;
+    air: Air;
+    blow: Blow;
+    sleep: Sleep;
+    health: Health;
+    lights: Lights;
+    swingHor: SwingHor;
+    swingVert: SwingVert;
+    quiet: Quiet;
+    turbo: Turbo;
+    powerSave: PowerSave;
+}
 
 export type VendorStateProps = 'Pow' | 'Mod' | 'TemUn' | 'SetTem' | 'TemSen' | 'WdSpd' | 'Air' | 'Blo' | 'Health' | 'SwhSlp' | 'Lig' | 'SwingLfRig' | 'SwUpDn' | 'Quiet' | 'Tur' | 'SvSt';
 
